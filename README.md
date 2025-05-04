@@ -51,3 +51,19 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/Kangweiguan/my-first-website.git
 git push -u origin main
+
+# 如何開一個新的Branch
+
+git checkout -b feature/chat-room
+
+# 如何檢查目前Branh狀況
+
+git status
+
+# 如何切換分支
+
+git checkout 分支名稱
+
+# 查詢目前專案所有分支
+
+git branch -a
