@@ -81,8 +81,8 @@ export default function Home() {
         <>
             <header className="bg-black py-20">
                 <div className="container mx-auto px-4">
-                    <h1 className="text-center text-white text-6xl font-extrabold">John Doe 的個人網站</h1>
-                    <h2 className="text-center text-[#FF5733] text-3xl font-bold mt-4">網站架構與設計師</h2>
+                    <h1 className="text-center text-white text-6xl font-extrabold">Will 的個人網站</h1>
+                    <h2 className="text-center text-[#FF5733] text-3xl font-bold mt-4">PM與前端網站開發者</h2>
                     <div className="flex justify-center gap-4 mt-6">
                         <a
                             href="/about"

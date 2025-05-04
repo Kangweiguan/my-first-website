@@ -232,28 +232,6 @@ export default function AdminPage() {
 
     return (
         <div className="min-h-screen bg-gray-100">
-            {/* 登入狀態顯示區 */}
-            <div className="bg-white shadow-sm p-4 mb-4">
-                <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    {user ? (
-                        <>
-                            <div className="text-gray-700">
-                                目前登入: <span className="font-medium">{user.email}</span>
-                            </div>
-                            <button
-                                onClick={handleLogout}
-                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md transition-colors"
-                            >
-                                登出
-                            </button>
-                        </>
-                    ) : (
-                        <div className="text-gray-700">
-                            目前尚未登入
-                        </div>
-                    )}
-                </div>
-            </div>
 
             <div className="grid grid-cols-4 gap-4 p-4">
                 {/* 左側選單區 */}
