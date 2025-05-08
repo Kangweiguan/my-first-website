@@ -36,7 +36,7 @@ export default function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 bg-green-600 text-white p-4 flex justify-between items-center z-50">
             <Link href="/" className="text-xl font-bold hover:text-green-200">
-                John Doe
+                Will
             </Link>
             <div className="space-x-4 flex items-center">
                 <Link href="/about" className="hover:text-green-200">
