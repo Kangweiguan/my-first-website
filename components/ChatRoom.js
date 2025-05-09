@@ -2,6 +2,9 @@
 // 將此元件強制轉換為前端元件，讓邏輯運算在瀏覽器端進行
 // 不能放金鑰、機密資訊
 import { useState } from "react"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faRobot } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function ChatRoom() {
@@ -30,7 +33,9 @@ export default function ChatRoom() {
                             minLength={2}
                             required
                         />
-                        <button className="w-10 h-10 bg-blue-500 border-2 border-orange-600 rounded-md">送出</button>
+                        <button className="w-10 h-10 bg-blue-500 border-2 border-orange-600 rounded-md">
+                            <FontAwesomeIcon icon={faPaperPlane} />
+                        </button>
                     </form>
                 </div>}
                 {/* 開啟聊天室的按鈕 */}
@@ -38,7 +43,7 @@ export default function ChatRoom() {
                     // on事件={函數}
                     onClick={() => setIsOpen(!isOpen)}
                     className="w-[50px] h-[50px] rounded-full bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-[0_4px_8px_rgba(128,0,128,0.2)]">
-                    開始聊天
+                    <FontAwesomeIcon icon={faRobot} />
                 </button>
             </div>
         </>
