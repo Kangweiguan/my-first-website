@@ -1,7 +1,7 @@
 "use client"
 // 將此元件強制轉換為前端元件，讓邏輯運算在瀏覽器端進行
 // 不能放金鑰、機密資訊
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import moment from "moment"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
@@ -28,6 +28,15 @@ export default function ChatRoom() {
     ])
     // 設計一個名為isLoading的狀態，預設為false。如果是true就在聊天室內顯示一個等候動畫
     const [isLoading, setIsLoading] = useState(false)
+    // 新增一個ref來引用聊天內容區的div元素
+    const chatContainerRef = useRef(null)
+
+    // 當chatHistory更新時，自動捲動到最下方
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+        }
+    }, [chatHistory])
 
     const submitHandler = (e) => {
         // 阻止表單送出時，預設會重新整理的行為
@@ -57,7 +66,7 @@ export default function ChatRoom() {
                         <h3 className="text-white font-bold">跟AI小編聊聊</h3>
                     </div>
                     {/* 聊天室-內容區 */}
-                    <div className="h-[300px] overflow-y-auto px-4 pt-3">
+                    <div ref={chatContainerRef} className="h-[300px] overflow-y-auto px-4 pt-3">
                         {/* 未來放置所有對話訊息的地方 */}
                         {/* 透過map迴圈，把陣列內的每個物件取出，並稱每個物件為Message */}
                         {chatHistory.map(message => {
