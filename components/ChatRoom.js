@@ -2,16 +2,51 @@
 // 將此元件強制轉換為前端元件，讓邏輯運算在瀏覽器端進行
 // 不能放金鑰、機密資訊
 import { useState } from "react"
+import moment from "moment"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function ChatRoom() {
-    // const [聊天室是否開啟之狀態, 控制該狀態的函數] = useState(狀態初始值)
-    const [isOpen, setIsOpen] = useState(false)
-
     // 控制聊天室開啟狀態的函數
+    // const [聊天室是否開啟之狀態, 控制該狀態的函數] = useState(狀態初始值)
+    const [isOpen, setIsOpen] = useState(true)
+    const [userInput, setUserInput] = useState("Hello")
+    // 預設一個名為chatHistory的狀態，初始值為空陣列
+    const [chatHistory, setChatHistory] = useState([
+        {
+            text: "Hello 你是誰？",
+            role: "user",
+            createdAt: new Date().getTime()
+        },
+        {
+            text: "Hi 我是AI",
+            role: "AI",
+            createdAt: new Date().getTime() + 1000
+        }
+    ])
+    // 設計一個名為isLoading的狀態，預設為false。如果是true就在聊天室內顯示一個等候動畫
+    const [isLoading, setIsLoading] = useState(false)
+
+    const submitHandler = (e) => {
+        // 阻止表單送出時，預設會重新整理的行為
+        e.preventDefault()
+        const userMessage = {
+            // 訊息的文字使用輸入框內的文字
+            text: userInput,
+            // 產生者為User
+            role: "user",
+            // 訊息產生的時間戳記
+            createdAt: new Date().getTime()
+        }
+        // 更新聊天室內的訊息，並且將過去的歷史紀錄訊息保留在前面，最新的訊息放在最下方
+        setChatHistory([...chatHistory, userMessage])
+        // 清空輸入框
+        setUserInput("")
+        // TODO: 將userMessgae POST到後端
+    }
+
     return (
         <>
             <div className="fixed bottom-5 right-5 flex flex-col items-end">
@@ -22,12 +57,50 @@ export default function ChatRoom() {
                         <h3 className="text-white font-bold">跟AI小編聊聊</h3>
                     </div>
                     {/* 聊天室-內容區 */}
-                    <div className="h-[300px] overflow-y-auto">
+                    <div className="h-[300px] overflow-y-auto px-4 pt-3">
                         {/* 未來放置所有對話訊息的地方 */}
+                        {/* 透過map迴圈，把陣列內的每個物件取出，並稱每個物件為Message */}
+                        {chatHistory.map(message => {
+                            // 取得每個message後要做的事
+                            // 把message內的三個欄位資料個別取出
+                            const { text, role, createdAt } = message
+                            // 將時間戳記轉換為可讀的時間格式
+                            const t = moment(createdAt).format("YYYY/MM/DD HH:mm:ss")
+
+                            if (role == "user") {
+                                // 如果訊息產生的角色是User
+                                return (
+                                    <div className="flex justify-end mb-4" key={createdAt}>
+                                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-tl-lg rounded-tr-lg rounded-bl-lg p-3 max-w-[75%] shadow-md">
+                                            <p className="font-semibold">{text}</p>
+                                            <p className="text-[10px] opacity-50">{t}</p>
+                                        </div>
+                                    </div>
+                                )
+                            } else if (role == "AI") {
+                                // 如果訊息產生的角色是AI
+                                return (
+                                    <div className="flex justify-start mb-4" key={createdAt}>
+                                        <div className="bg-gradient-to-r from-blue-500 to-gray-600 text-white rounded-tl-lg rounded-tr-lg rounded-br-lg p-3 max-w-[75%] shadow-md">
+                                            <p className="font-semibold">{text}</p>
+                                            <p className="text-[10px] opacity-50">{t}</p>
+                                        </div>
+                                    </div>
+                                )
+
+                            }
+                        })
+                        }
                     </div>
                     {/* 聊天室-輸入表單區 */}
-                    <form className="p-4 border-t border-gray-200 flex gap-2">
+                    <form onSubmit={submitHandler} className="p-4 border-t border-gray-200 flex gap-2">
                         <input
+                            // 讓輸入框的值，對應到userInput狀態
+                            value={userInput}
+                            // onChange事件觸發時，e.target.value代表User輸入在輸入框中的文字
+                            // 透過usereInput 把User當下輸入的文字更新 userInput狀態
+                            // 狀態被更新會觸發react，更新整個畫面的程序，讓畫面重新渲染(re-render)
+                            onChange={e => setUserInput(e.target.value)}
                             className="flex-1 border border-gray-300 rounded-md p-2"
                             placeholder="趕快來跟AI對話"
                             minLength={2}
