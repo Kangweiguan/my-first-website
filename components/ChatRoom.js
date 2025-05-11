@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import moment from "moment"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
-import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane, faSpinner } from '@fortawesome/free-solid-svg-icons'
 
 
 export default function ChatRoom() {
@@ -53,6 +53,8 @@ export default function ChatRoom() {
         setChatHistory([...chatHistory, userMessage])
         // 清空輸入框
         setUserInput("")
+        // 顯示訊息回覆中，請等候的提示
+        setIsLoading(true)
         // TODO: 將userMessgae POST到後端
     }
 
@@ -100,6 +102,16 @@ export default function ChatRoom() {
                             }
                         })
                         }
+
+                        {isLoading &&
+                            <div>
+                                <p className="text-gray-500">
+                                    <FontAwesomeIcon icon={faSpinner} className="mr-2" fa-spin />
+                                    等待AI回應中
+                                </p>
+
+                            </div>}
+
                     </div>
                     {/* 聊天室-輸入表單區 */}
                     <form onSubmit={submitHandler} className="p-4 border-t border-gray-200 flex gap-2">
