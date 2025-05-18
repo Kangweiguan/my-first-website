@@ -13,7 +13,7 @@ import axios from "axios";
 export default function ChatRoom() {
     // 控制聊天室開啟狀態的函數
     // const [聊天室是否開啟之狀態, 控制該狀態的函數] = useState(狀態初始值)
-    const [isOpen, setIsOpen] = useState(true)
+    const [isOpen, setIsOpen] = useState(false)
     // const [聊天室User輸入框輸入狀態, 控制該狀態的函數] = useState(狀態初始值)
     const [userInput, setUserInput] = useState("")
     // 預設一個名為chatHistory(聊天室內整體的對話)的狀態，初始值為空陣列
