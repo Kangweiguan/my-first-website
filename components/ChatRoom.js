@@ -6,14 +6,17 @@ import moment from "moment"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faRobot } from '@fortawesome/free-solid-svg-icons'
 import { faPaperPlane, faSpinner } from '@fortawesome/free-solid-svg-icons'
+// 引入axios：可將資料傳送給後端之套件(負責做Https request的套件)
+import axios from "axios";
 
 
 export default function ChatRoom() {
     // 控制聊天室開啟狀態的函數
     // const [聊天室是否開啟之狀態, 控制該狀態的函數] = useState(狀態初始值)
     const [isOpen, setIsOpen] = useState(true)
-    const [userInput, setUserInput] = useState("Hello")
-    // 預設一個名為chatHistory的狀態，初始值為空陣列
+    // const [聊天室User輸入框輸入狀態, 控制該狀態的函數] = useState(狀態初始值)
+    const [userInput, setUserInput] = useState("")
+    // 預設一個名為chatHistory(聊天室內整體的對話)的狀態，初始值為空陣列
     const [chatHistory, setChatHistory] = useState([
         {
             text: "Hello 你是誰？",
@@ -22,7 +25,7 @@ export default function ChatRoom() {
         },
         {
             text: "Hi 我是AI",
-            role: "AI",
+            role: "ai",
             createdAt: new Date().getTime() + 1000
         }
     ])
@@ -30,13 +33,6 @@ export default function ChatRoom() {
     const [isLoading, setIsLoading] = useState(false)
     // 新增一個ref來引用聊天內容區的div元素
     const chatContainerRef = useRef(null)
-
-    // 當chatHistory更新時，自動捲動到最下方
-    useEffect(() => {
-        if (chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
-        }
-    }, [chatHistory])
 
     const submitHandler = (e) => {
         // 阻止表單送出時，預設會重新整理的行為
@@ -55,8 +51,29 @@ export default function ChatRoom() {
         setUserInput("")
         // 顯示訊息回覆中，請等候的提示
         setIsLoading(true)
-        // TODO: 將userMessgae POST到後端
+        // 將userMessgae POST到後端 /api/chat
+        axios
+            .post("/api/chat", userMessage)
+            .then(res => {
+                console.log("成功獲得後端回應", res);
+                const aiMessage = res.data;
+                // 確保前次使用者的訊息已經被更新完成後的狀態放在新狀態的最前面
+                setChatHistory(prev => [...prev, aiMessage]);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                console.log("出錯了!", error);
+                alert("發生錯誤，請重新再試一次！");
+                setIsLoading(false);
+            })
     }
+
+    // 當chatHistory更新時，自動捲動到最下方
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+        }
+    }, [chatHistory])
 
     return (
         <>
@@ -68,18 +85,18 @@ export default function ChatRoom() {
                         <h3 className="text-white font-bold">跟AI小編聊聊</h3>
                     </div>
                     {/* 聊天室-內容區 */}
-                    <div ref={chatContainerRef} className="h-[300px] overflow-y-auto px-4 pt-3">
+                    <div ref={chatContainerRef} className="h-[300px] overflow-y-auto px-4 pt-5">
                         {/* 未來放置所有對話訊息的地方 */}
                         {/* 透過map迴圈，把陣列內的每個物件取出，並稱每個物件為Message */}
                         {chatHistory.map(message => {
-                            // 取得每個message後要做的事
+                            // 取得每個message物件後要做的事
                             // 把message內的三個欄位資料個別取出
                             const { text, role, createdAt } = message
                             // 將時間戳記轉換為可讀的時間格式
                             const t = moment(createdAt).format("YYYY/MM/DD HH:mm:ss")
-
+                            // 如果訊息產生的角色是User
                             if (role == "user") {
-                                // 如果訊息產生的角色是User
+                                // 則做以下的事
                                 return (
                                     <div className="flex justify-end mb-4" key={createdAt}>
                                         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-tl-lg rounded-tr-lg rounded-bl-lg p-3 max-w-[75%] shadow-md">
@@ -88,8 +105,9 @@ export default function ChatRoom() {
                                         </div>
                                     </div>
                                 )
-                            } else if (role == "AI") {
                                 // 如果訊息產生的角色是AI
+                            } else if (role == "ai") {
+                                // 則做以下的事
                                 return (
                                     <div className="flex justify-start mb-4" key={createdAt}>
                                         <div className="bg-gradient-to-r from-blue-500 to-gray-600 text-white rounded-tl-lg rounded-tr-lg rounded-br-lg p-3 max-w-[75%] shadow-md">
@@ -98,7 +116,6 @@ export default function ChatRoom() {
                                         </div>
                                     </div>
                                 )
-
                             }
                         })
                         }
@@ -106,7 +123,7 @@ export default function ChatRoom() {
                         {isLoading &&
                             <div>
                                 <p className="text-gray-500">
-                                    <FontAwesomeIcon icon={faSpinner} className="mr-2" fa-spin />
+                                    <FontAwesomeIcon icon={faSpinner} className="mr-2 fa-spin" />
                                     等待AI回應中
                                 </p>
 
