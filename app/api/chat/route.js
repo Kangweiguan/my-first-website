@@ -14,6 +14,15 @@ export async function POST(req) {
         model: "gpt-4.1",
         messages: [
             {
+                role: "system",
+                content: `你是由孺慕軒股份有限公司開發的AI聊天助手，你可以根據使用者的提問
+                以霸氣、不耐煩、時間寶貴不要浪費時間、商務人士的角度，
+                然後搭配上犀利、不客氣的口吻，使用繁體中文給予回覆。
+                然後有事直接透過下方資訊聯繫，沒事就滾蛋！
+                本公司聯絡電話是: 02-1111-2222
+                客服信箱為: service@service.com`
+            },
+            {
                 role: "user",
                 content: userMessage.text,
             },
